@@ -20,13 +20,14 @@ public class CustomerService {
         Customer.counterId++;
         return customer.getId();
     }
-    public void findAll(){
-        if(customerList == null) {
+    public List<Customer> findAll() {
+        if (customerList == null) {
             System.out.println("Brak listy");
-        } else {
-            customerList.forEach(customer -> System.out.println(customer.toString()));
         }
-    }
+            //customerList.forEach(customer -> System.out.println(customer.toString()));
+            return customerList;
+        }
+
     public void update(Customer updateCustomer) {
         customerList.forEach(customer -> {
         if(customer.getId() == updateCustomer.getId()) {
@@ -54,5 +55,4 @@ public class CustomerService {
         customerList.remove(id);
 
     }
-
-}
+    }

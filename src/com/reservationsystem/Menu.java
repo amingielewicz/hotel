@@ -1,6 +1,7 @@
 package com.reservationsystem;
 
 import com.reservationsystem.dto.Customer;
+import com.reservationsystem.exception.WrongNameException;
 import com.reservationsystem.service.CustomerService;
 
 import java.util.Scanner;
@@ -29,39 +30,42 @@ public class Menu {
                 break;
             case 1:
                 keyboard.nextLine();
-                System.out.println("Dodaj imię i nazwisko");
+            System.out.println("Dodaj imię i nazwisko");
                 String fullName = keyboard.nextLine();
-                System.out.println(validateFullName(fullName));
+                String[] splitFullName = validateFullName(fullName);
                 System.out.println("Dodaj numer PESEL");
                 String pesel = keyboard.nextLine();
-                String[] splitName = fullName.split(" ");
-                customerService.create(new Customer(splitName[0], splitName[1], pesel));
+                customerService.create(new Customer(splitFullName[0], splitFullName[1], pesel));
                 break;
             case 2:
                 System.out.println("LISTA KLIENTÓW:");
-                customerService.findAll();
+                customerService.findAll().forEach(customer -> System.out.println(customer.toString()));
                 break;
             case 3:
                 System.out.println("AKTUALIZACJA DANYCH KLIENTA:");
-                customerService.findAll();
+                customerService.findAll().forEach(customer -> System.out.println(customer.toString()));
                 System.out.println("Wybierz klienta, którego dane chcesz zmienić.");
                 id = keyboard.nextInt();
                 if (customerService.checkId(id)) {
                     System.out.println("Podaj nowe imię i nazwisko klienta.");
                     keyboard.nextLine();
                     String updateFullName = keyboard.nextLine();
-                    String[] splitUpdateName = updateFullName.split(" ");
+                    String[] splitUpdateFullName = validateFullName(updateFullName);
                     System.out.println("Podaj nowy numer PESEL");
                     String updatePesel = keyboard.nextLine();
-                    customerService.update(new Customer(id, splitUpdateName[0], splitUpdateName[1], updatePesel));
+                    customerService.update(new Customer(id, splitUpdateFullName[0], splitUpdateFullName[1], updatePesel));
                 } else {
                     System.out.println("Brak klienta o podanym id");
                 }
                 break;
             case 4:
-                System.out.println("USUNIĘCIE DANYCH KLIENTA.");
+                System.out.println("USUNIĘCIE DANYCH KLIENTA."); //todo do poprawy USUNIĘCIE DANYCH
+                                                                // (1) co w momencie, gdy usuniemy użytkownika z ID np. 10 -> index ma nadal 10
+                                                                // (2) co w momencie, gdy podasz ID którego nie ma
                 System.out.println("Wybierz klienta, którego dane chcesz usunąć.");
-                customerService.findAll();
+                customerService.findAll().forEach(customer -> {
+                    System.out.println(customer.toString());
+                });
                 id = keyboard.nextInt();
                 customerService.delete(id - 1);
                 break;
@@ -70,12 +74,17 @@ public class Menu {
         }
     }
 
-    private String validateFullName(String fullName) {
-        if(!fullName.isEmpty()){
-            return fullName;
-        } else {
-            throw new IllegalArgumentException("Brak podanego imienia i nazwiska.");
+    private String[] validateFullName(String fullName) {
+        String[] splitName = new String[2];
+        try{
+            String[] split = fullName.split(" ");
+            splitName[0] = split[0];
+            splitName[1] = split[1];
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            System.err.println("Podałeś błędnie imię i nazwisko.");
+            menu();
         }
+        return splitName;
     }
 
     public void showMenu() {
