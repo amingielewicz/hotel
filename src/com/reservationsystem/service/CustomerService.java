@@ -1,5 +1,7 @@
 package com.reservationsystem.service;
 
+import com.reservationsystem.Menu;
+import com.reservationsystem.dto.Common;
 import com.reservationsystem.dto.Customer;
 
 import java.util.ArrayList;
@@ -21,12 +23,21 @@ public class CustomerService {
         return customer.getId();
     }
     public List<Customer> findAll() {
-        if (customerList == null) {
-            System.out.println("Brak listy");
-        }
-            //customerList.forEach(customer -> System.out.println(customer.toString()));
+//        if (customerList == null) {
+//            System.out.println("Brak listy.");
+//            Menu.showMenu();
+//        }
             return customerList;
         }
+
+    public Customer getCustomer(int id) {
+        for(Customer customer : customerList) {
+            if (customer.getId() == id) {
+                return customer;
+            }
+        }
+        return null;
+    }
 
     public void update(Customer updateCustomer) {
         customerList.forEach(customer -> {
@@ -52,7 +63,6 @@ public class CustomerService {
     }
 
     public void delete(int id) {
-        customerList.remove(id);
-
+            customerList.remove(id);
     }
     }

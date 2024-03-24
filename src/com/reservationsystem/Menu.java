@@ -1,9 +1,10 @@
 package com.reservationsystem;
 
+import com.reservationsystem.direction.Filter;
 import com.reservationsystem.dto.Customer;
-import com.reservationsystem.exception.WrongNameException;
 import com.reservationsystem.service.CustomerService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -29,8 +30,9 @@ public class Menu {
                 exitApplication = false;
                 break;
             case 1:
+                System.out.println("DODAWANIE KLIENTA:");
                 keyboard.nextLine();
-            System.out.println("Dodaj imię i nazwisko");
+                System.out.println("Dodaj imię i nazwisko");
                 String fullName = keyboard.nextLine();
                 String[] splitFullName = validateFullName(fullName);
                 System.out.println("Dodaj numer PESEL");
@@ -39,12 +41,12 @@ public class Menu {
                 break;
             case 2:
                 System.out.println("LISTA KLIENTÓW:");
-                customerService.findAll().forEach(customer -> System.out.println(customer.toString()));
+                checkListNotNull(Filter.SHOW);
                 break;
             case 3:
                 System.out.println("AKTUALIZACJA DANYCH KLIENTA:");
-                customerService.findAll().forEach(customer -> System.out.println(customer.toString()));
-                System.out.println("Wybierz klienta, którego dane chcesz zmienić.");
+                //todo wyjście z aktualizacji, gdy nie chcemy nic wybrać
+                checkListNotNull(Filter.UPDATE);
                 id = keyboard.nextInt();
                 if (customerService.checkId(id)) {
                     System.out.println("Podaj nowe imię i nazwisko klienta.");
@@ -59,24 +61,39 @@ public class Menu {
                 }
                 break;
             case 4:
-                System.out.println("USUNIĘCIE DANYCH KLIENTA."); //todo do poprawy USUNIĘCIE DANYCH
-                                                                // (1) co w momencie, gdy usuniemy użytkownika z ID np. 10 -> index ma nadal 10
-                                                                // (2) co w momencie, gdy podasz ID którego nie ma
-                System.out.println("Wybierz klienta, którego dane chcesz usunąć.");
-                customerService.findAll().forEach(customer -> {
-                    System.out.println(customer.toString());
-                });
+                System.out.println("USUNIĘCIE DANYCH KLIENTA.");
+                //todo wyjście z usuwania, gdy nie chcemy nic wybrać
+                checkListNotNull(Filter.DELETE);
                 id = keyboard.nextInt();
-                customerService.delete(id - 1);
+                Customer customer = checkCustomerNotNull(id);
+                int idOnList = customerService.findAll().indexOf(customer);
+                customerService.delete(idOnList);
                 break;
             default:
                 System.out.println("Brak takiej opcji.");
         }
     }
 
+    private void checkListNotNull(Filter filter) {
+        if (!customerService.findAll().isEmpty()) {
+            if (Filter.DELETE.equals(filter)) {
+                System.out.println("Wybierz klienta, którego dane chcesz usunąć.");
+            }
+            if (Filter.UPDATE.equals(filter)) {
+                System.out.println("Wybierz klienta, którego dane chcesz zmienić.");
+            }
+            customerService.findAll().forEach(customer -> {
+                System.out.println(customer.toString());
+            });
+        } else {
+            System.out.println("Brak listy.");
+            showMenu();
+        }
+    }
+
     private String[] validateFullName(String fullName) {
         String[] splitName = new String[2];
-        try{
+        try {
             String[] split = fullName.split(" ");
             splitName[0] = split[0];
             splitName[1] = split[1];
@@ -95,5 +112,15 @@ public class Menu {
                 e.getMessage();
             }
         }
+    }
+
+    private Customer checkCustomerNotNull(int id) {
+        Customer customer = customerService.getCustomer(id);
+        if (customer != null) {
+            return customer;
+        }
+        System.out.println("Podałeś id klienta, którego nie ma w bazie. Podaj poprawny id klienta.");
+        int idCustomer = keyboard.nextInt();
+        return checkCustomerNotNull(idCustomer);
     }
 }

@@ -11,6 +11,9 @@ public class Common {
         this.surname = surname;
     }
 
+    public Common() {
+    }
+
     public String getName() {
         return name;
     }

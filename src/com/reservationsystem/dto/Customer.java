@@ -8,6 +8,20 @@ public static int counterId = 1;
 private int id = counterId;
 private String pesel;
 
+    public Customer(String name, String surname, String pesel) {
+        super(name, surname);
+        this.pesel = pesel;
+    }
+
+    public Customer(int id,String name, String surname, String pesel) {
+        super(name, surname);
+        this.id = id;
+        this.pesel = pesel;
+    }
+
+    public Customer() {
+    }
+
     public int getId() {
         return id;
     }
@@ -25,16 +39,5 @@ private String pesel;
                 "Imię: " + super.getName() + " " +
                 "Nazwisko: " + super.getSurname() + " " +
                 "PESEL: " + pesel;
-    }
-
-    public Customer(String name, String surname, String pesel) {
-        super(name, surname);
-        this.pesel = pesel;
-    }
-
-    public Customer(int id,String name, String surname, String pesel) {
-        super(name, surname);
-        this.id = id;
-        this.pesel = pesel;
     }
 }
