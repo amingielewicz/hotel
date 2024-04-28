@@ -7,18 +7,15 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CustomerServiceTest {
 
     private Customer EXPECTED_CUSTOMER_FIRST = new Customer("Tomasz", "Kowalski", "8212150594584");
     private Customer EXPECTED_CUSTOMER_SECOND = new Customer("Krystiano", "Ronaldo", "821198094521");
 
-    @Before
-    public void setUp(){
-        EXPECTED_CUSTOMER_FIRST = new Customer();
-        EXPECTED_CUSTOMER_SECOND = new Customer();
-    }
+
     @Test
     public void create() {
         //Given
@@ -56,29 +53,37 @@ public class CustomerServiceTest {
         for (Customer actual : result) {
             actualName.add(actual.getName());
         }
-        List<Integer> actualIc = new ArrayList<>();
+        List<Integer> actualId = new ArrayList<>();
         for (Customer customer : result) {
-            actualIc.add(customer.getId());
+            actualId.add(customer.getId());
         }
-        assertTrue(actualIc.contains(2));
-
+        assertTrue(actualId.contains(7));
         assertTrue(actualName.contains(EXPECTED_CUSTOMER_FIRST.getName()));
     }
-    @Test
-    public void delete(){
-
-    }
-
 
     @Test
-    public void findAll() {
+    public void delete() {
         //Given
         CustomerService customerService = new CustomerService();
         int id = customerService.create(EXPECTED_CUSTOMER_FIRST);
         int secondId = customerService.create(EXPECTED_CUSTOMER_SECOND);
         //When
+        customerService.delete(secondId);
         List<Customer> result = customerService.findAll();
         //Expected
-        assertEquals(2, result.size());
+        System.out.println(result.size());
+        assertEquals(1, result.size());
     }
+
+@Test
+public void findAll() {
+    //Given
+    CustomerService customerService = new CustomerService();
+    int id = customerService.create(EXPECTED_CUSTOMER_FIRST);
+    int secondId = customerService.create(EXPECTED_CUSTOMER_SECOND);
+    //When
+    List<Customer> result = customerService.findAll();
+    //Expected
+    assertEquals(2, result.size());
+}
 }

@@ -59,9 +59,9 @@ public class CustomerService {
     }
 
     public void delete(int id) {
-            customerList.remove(id);
+    //TODO to jest do poprawy, bo obecnie zakładamy, że id jest indeksem na liście, a niekoniecznie tak musi być.
+        customerList.remove(id);
     }
-
 }
 
 
