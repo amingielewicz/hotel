@@ -23,10 +23,6 @@ public class CustomerService {
         return customer.getId();
     }
     public List<Customer> findAll() {
-//        if (customerList == null) {
-//            System.out.println("Brak listy.");
-//            Menu.showMenu();
-//        }
             return customerList;
         }
 
