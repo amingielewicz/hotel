@@ -6,6 +6,7 @@ import com.reservationsystem.dto.Customer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomerService {
@@ -23,10 +24,6 @@ public class CustomerService {
         return customer.getId();
     }
     public List<Customer> findAll() {
-//        if (customerList == null) {
-//            System.out.println("Brak listy.");
-//            Menu.showMenu();
-//        }
             return customerList;
         }
 
@@ -63,6 +60,20 @@ public class CustomerService {
     }
 
     public void delete(int id) {
-            customerList.remove(id);
+        Customer customer = checkCustomerNotNull(id);
+        int idOnList = findAll().indexOf(customer);
+        customerList.remove(idOnList);
     }
+    private Customer checkCustomerNotNull(int id) {
+        Customer customer = getCustomer(id);
+        if (customer != null) {
+            return customer;
+        }
+        System.out.println("Podałeś id klienta, którego nie ma w bazie. Podaj poprawny id klienta.");
+        Scanner keyboard = new Scanner(System.in);
+        int idCustomer = keyboard.nextInt();
+        return checkCustomerNotNull(idCustomer);
     }
+}
+
+
