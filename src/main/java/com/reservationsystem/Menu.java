@@ -65,9 +65,8 @@ public class Menu {
                 //todo wyjście z usuwania, gdy nie chcemy nic wybrać
                 checkListNotNull(Filter.DELETE);
                 id = keyboard.nextInt();
-                Customer customer = checkCustomerNotNull(id);
-                int idOnList = customerService.findAll().indexOf(customer);
-                customerService.delete(idOnList);
+                customerService.delete(id);
+
                 break;
             default:
                 System.out.println("Brak takiej opcji.");
@@ -114,13 +113,5 @@ public class Menu {
         }
     }
 
-    private Customer checkCustomerNotNull(int id) {
-        Customer customer = customerService.getCustomer(id);
-        if (customer != null) {
-            return customer;
-        }
-        System.out.println("Podałeś id klienta, którego nie ma w bazie. Podaj poprawny id klienta.");
-        int idCustomer = keyboard.nextInt();
-        return checkCustomerNotNull(idCustomer);
-    }
+
 }
