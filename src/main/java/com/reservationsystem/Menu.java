@@ -61,11 +61,15 @@ public class Menu {
                 }
                 break;
             case 4:
-                System.out.println("USUNIĘCIE DANYCH KLIENTA.");
-                //todo wyjście z usuwania, gdy nie chcemy nic wybrać
-                checkListNotNull(Filter.DELETE);
-                id = keyboard.nextInt();
-                customerService.delete(id);
+                Boolean idIsOnList;
+                do {
+                    System.out.println("--------------------------------------------------------------------------------");
+                    System.out.println("USUNIĘCIE DANYCH KLIENTA.");
+                    checkListNotNull(Filter.DELETE);
+                    id = keyboard.nextInt();
+                    idIsOnList = customerService.delete(id);
+                }while (idIsOnList == false);
+
 
                 break;
             default:
@@ -74,17 +78,22 @@ public class Menu {
     }
 
     private void checkListNotNull(Filter filter) {
-        if (!customerService.findAll().isEmpty()) {
-            if (Filter.DELETE.equals(filter)) {
-                System.out.println("Wybierz klienta, którego dane chcesz usunąć.");
+        if(customerService.findAll() != null) {
+            if (!customerService.findAll().isEmpty()) {
+                if (Filter.DELETE.equals(filter)) {
+                    System.out.println("Wybierz klienta, którego dane chcesz usunąć.");
+                }
+                if (Filter.UPDATE.equals(filter)) {
+                    System.out.println("Wybierz klienta, którego dane chcesz zmienić.");
+                }
+                customerService.findAll().forEach(customer -> {
+                    System.out.println(customer.toString());
+                });
+            } else {
+                System.out.println("Brak listy.");
+                showMenu();
             }
-            if (Filter.UPDATE.equals(filter)) {
-                System.out.println("Wybierz klienta, którego dane chcesz zmienić.");
-            }
-            customerService.findAll().forEach(customer -> {
-                System.out.println(customer.toString());
-            });
-        } else {
+        }else {
             System.out.println("Brak listy.");
             showMenu();
         }
