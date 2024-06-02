@@ -1,14 +1,12 @@
 package com.reservationsystem.service;
 
-import com.reservationsystem.Menu;
 import com.reservationsystem.dto.Customer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CustomerService {
+public class CustomerService implements CustomerServiceInterface {
     private List<Customer> customerList;
 
     public int create(Customer customer) {
