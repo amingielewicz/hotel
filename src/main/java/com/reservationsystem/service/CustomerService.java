@@ -1,7 +1,6 @@
 package com.reservationsystem.service;
 
 import com.reservationsystem.Menu;
-import com.reservationsystem.dto.Common;
 import com.reservationsystem.dto.Customer;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomerService {
-   private List<Customer> customerList;
+    private List<Customer> customerList;
 
     public int create(Customer customer) {
         if (customerList != null) {
@@ -23,12 +22,13 @@ public class CustomerService {
         Customer.counterId++;
         return customer.getId();
     }
+
     public List<Customer> findAll() {
-            return customerList;
-        }
+        return customerList;
+    }
 
     public Customer getCustomer(int id) {
-        for(Customer customer : customerList) {
+        for (Customer customer : customerList) {
             if (customer.getId() == id) {
                 return customer;
             }
@@ -38,41 +38,56 @@ public class CustomerService {
 
     public void update(Customer updateCustomer) {
         customerList.forEach(customer -> {
-        if(customer.getId() == updateCustomer.getId()) {
-            customer.setName(updateCustomer.getName());
-            customer.setSurname(updateCustomer.getSurname());
-            customer.setPesel(updateCustomer.getPesel());
-        }
-        }
-            );
+                    if (customer.getId() == updateCustomer.getId()) {
+                        customer.setName(updateCustomer.getName());
+                        customer.setSurname(updateCustomer.getSurname());
+                        customer.setPesel(updateCustomer.getPesel());
+                    }
+                }
+        );
     }
+
     public boolean checkId(int id) {
         AtomicBoolean isId = new AtomicBoolean(false);
         customerList.forEach(customer -> {
-            if(customer.getId() == id) {
+            if (customer.getId() == id) {
                 isId.set(true);
             }
         });
-        if (isId.get()){
+        if (isId.get()) {
             return true;
         }
         return false;
     }
 
-    public void delete(int id) {
-        Customer customer = checkCustomerNotNull(id);
-        int idOnList = findAll().indexOf(customer);
-        customerList.remove(idOnList);
-    }
-    private Customer checkCustomerNotNull(int id) {
-        Customer customer = getCustomer(id);
-        if (customer != null) {
-            return customer;
+    public Boolean delete(int id) {
+        int index = getIndexListById(id);
+        Boolean idIsOnList;
+        if (index != id) {
+            customerList.remove(index);
+            idIsOnList = true;
+            System.out.println("Usunieto uzytkownika o id: " + id);
+        }else {
+            System.err.println("Brak uzytkownika o podanym id: " + id);
+            idIsOnList = false;
         }
-        System.out.println("Podałeś id klienta, którego nie ma w bazie. Podaj poprawny id klienta.");
-        Scanner keyboard = new Scanner(System.in);
-        int idCustomer = keyboard.nextInt();
-        return checkCustomerNotNull(idCustomer);
+        return idIsOnList;
+    }
+
+    private int getIndexListById(int id) {
+        int index = 0;
+        if (customerList != null) {
+            for (Customer customer : customerList) {
+                if (customer.getId() == id){
+                    index = customerList.indexOf(customer);
+                    return index;
+                }
+            }
+        }else {
+            System.err.println("Brak klientow na liscie");
+            return id;
+        }
+        return id;
     }
 }
 
