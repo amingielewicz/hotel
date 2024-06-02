@@ -1,7 +1,5 @@
 package com.reservationsystem.dto;
 
-import com.reservationsystem.dto.Common;
-
 public class Customer extends Common {
 
 public static int counterId = 1;
@@ -28,16 +26,15 @@ private String pesel;
     public String getPesel() {
         return pesel;
     }
-
     public void setPesel(String pesel) {
         this.pesel = pesel;
     }
 
     @Override
     public String toString() {
-        return "ID: " + id + " " +
+        return "ID: " + getId() + " " +
                 "Imię: " + super.getName() + " " +
                 "Nazwisko: " + super.getSurname() + " " +
-                "PESEL: " + pesel;
+                "PESEL: " + getPesel();
     }
 }
