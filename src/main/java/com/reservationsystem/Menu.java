@@ -45,7 +45,6 @@ public class Menu {
                 break;
             case 3:
                 System.out.println("AKTUALIZACJA DANYCH KLIENTA:");
-                //todo wyjście z aktualizacji, gdy nie chcemy nic wybrać
                 checkListNotNull(Filter.UPDATE);
                 id = keyboard.nextInt();
                 if (customerService.checkId(id)) {
