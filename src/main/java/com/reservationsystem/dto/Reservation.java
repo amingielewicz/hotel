@@ -2,8 +2,10 @@ package com.reservationsystem.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Reservation {
+    public static int counterId = 1;
     private int id = 1;
     private int customerId;
     private LocalDate startReservationDate;
@@ -49,18 +51,47 @@ public class Reservation {
         this.id = id;
     }
 
+    public Reservation() {
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setStartReservationDate(LocalDate startReservationDate) {
+        this.startReservationDate = startReservationDate;
+    }
+
+    public void setEndReservationDate(LocalDate endReservationDate) {
+        this.endReservationDate = endReservationDate;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
+    }
+
+    public void setFullPaid(boolean fullPaid) {
+        isFullPaid = fullPaid;
+    }
+
+    public void setEmployerId(int employerId) {
+        this.employerId = employerId;
+    }
+
     @Override
     public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", startReservationDate=" + startReservationDate +
-                ", endReservationDate=" + endReservationDate +
-                ", sum=" + sum +
-                ", deposit=" + deposit +
-                ", isFullPaid=" + isFullPaid +
-                ", employerId=" + employerId +
-                '}';
+        return "Id" + getId() + " " +
+                "Id Klienta" + getCustomerId() + " " +
+                "Data rozpoczęcia rezerwacji: " + getStartReservationDate() + " " +
+                "Data zakończenia rezerwacji: " + getEndReservationDate() + " " +
+                "Suma: " + getSum() + " " +
+                "Wpłata klienta: " + getCustomerId() + " " +
+                "Czy zapłacono całość?: " + getCustomerId() + " " +
+                "Id pracownika" + getEmployerId();
     }
 
     public Reservation(int customerId, LocalDate startReservationDate, LocalDate endReservationDate,
@@ -117,4 +148,5 @@ public class Reservation {
             return new Reservation(customerId, startReservationDate, endReservationDate, sum, deposit, isFullPaid, employerId);
         }
     }
+
 }

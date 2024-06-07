@@ -4,11 +4,15 @@ import java.math.BigDecimal;
 
 public class Room {
 
+    public static int counterId;
     private int id = 1;
     private int roomNumber;
     private int roomSize;
     private String equipment;
     private BigDecimal price;
+
+    public Room() {
+    }
 
     public int getId() {
         return id;
@@ -34,15 +38,29 @@ public class Room {
         return price;
     }
 
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public void setRoomSize(int roomSize) {
+        this.roomSize = roomSize;
+    }
+
+    public void setEquipment(String equipment) {
+        this.equipment = equipment;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
-        return "Room{" +
-                "id=" + id +
-                ", roomNumber=" + roomNumber +
-                ", roomSize=" + roomSize +
-                ", equipment='" + equipment + '\'' +
-                ", price=" + price +
-                '}';
+        return "ID:" + getId() + " " +
+                "Numer pokoju:" + getRoomNumber() + " " +
+                "Ilość osób w pokoju:" + getRoomSize() + " " +
+                "Wyposażenie:" + getEquipment() + " " +
+                "Cena:" + getPrice();
     }
 
     public Room(int roomNumber, int roomSize, String equipment, BigDecimal price) {
