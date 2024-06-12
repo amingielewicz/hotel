@@ -1,6 +1,7 @@
 package com.reservationsystem.service;
 
 import com.reservationsystem.dto.Employee;
+import com.reservationsystem.dto.Reservation;
 import com.reservationsystem.dto.Room;
 
 import java.math.BigDecimal;
@@ -13,5 +14,4 @@ public interface RoomServiceInterface {
     void update(Room updateRoom);
     boolean checkId(int id);
     Boolean delete(int id);
-
 }

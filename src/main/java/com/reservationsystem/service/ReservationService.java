@@ -26,7 +26,6 @@ public class ReservationService implements ReservationServiceInterface {
             reservationList = new ArrayList<>();
             reservationList.add(reservation);
         }
-        int id = reservation.getId();
         Reservation.counterId++;
         return reservation.getId();
     }
@@ -63,8 +62,8 @@ public class ReservationService implements ReservationServiceInterface {
 
     public boolean checkId(int id) {
         AtomicBoolean isId = new AtomicBoolean(false);
-        reservationList.forEach(employee -> {
-            if (employee.getId() == id) {
+        reservationList.forEach(reservation -> {
+            if (reservation.getId() == id) {
                 isId.set(true);
             }
         });
@@ -87,6 +86,19 @@ public class ReservationService implements ReservationServiceInterface {
         }
         return idIsOnList;
     }
+    public BigDecimal sum(int roomId, LocalDate startDateReservation, LocalDate endDateReservation) {
+        long rentDays = ChronoUnit.DAYS.between(startDateReservation, endDateReservation);
+        Room room = roomService.getRoom(roomId);
+        return BigDecimal.valueOf(rentDays).multiply(room.getPrice());
+    }
+    public Reservation getById(int id) {
+       for(Reservation reservation : reservationList) {
+           if(id == reservation.getId()){
+               return reservation;
+           }
+       }
+       return null;
+    }
 
     private int getIndexListById(int id) {
         int index = 0;
@@ -98,16 +110,11 @@ public class ReservationService implements ReservationServiceInterface {
                 }
             }
         } else {
-            System.err.println("Brak rezerwacji na liscie");
+            System.err.println("Brak rezerwacji na liście");
             return id;
         }
         return id;
     }
 
-    public BigDecimal sum(int roomId, LocalDate startDateReservation, LocalDate endDateReservation) {
-        long rentDays = ChronoUnit.DAYS.between(startDateReservation, endDateReservation);
-        Room room = roomService.getRoom(roomId);
-        return BigDecimal.valueOf(rentDays).multiply(room.getPrice());
-    }
 
 }

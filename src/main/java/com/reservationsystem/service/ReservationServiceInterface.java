@@ -1,6 +1,5 @@
 package com.reservationsystem.service;
 
-import com.reservationsystem.dto.Employee;
 import com.reservationsystem.dto.Reservation;
 
 import java.math.BigDecimal;
@@ -15,4 +14,5 @@ public interface ReservationServiceInterface {
     boolean checkId(int id);
     Boolean delete(int id);
     BigDecimal sum(int roomId, LocalDate startDateReservation, LocalDate endDateReservation);
+    Reservation getById(int id);
 }

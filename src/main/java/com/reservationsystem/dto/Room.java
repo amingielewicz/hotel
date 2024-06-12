@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public class Room {
 
-    public static int counterId;
-    private int id = 1;
+    public static int counterId = 1;
+    private int id = counterId;
     private int roomNumber;
     private int roomSize;
     private String equipment;
@@ -56,11 +56,11 @@ public class Room {
 
     @Override
     public String toString() {
-        return "ID:" + getId() + " " +
-                "Numer pokoju:" + getRoomNumber() + " " +
-                "Ilość osób w pokoju:" + getRoomSize() + " " +
-                "Wyposażenie:" + getEquipment() + " " +
-                "Cena:" + getPrice();
+        return "ID: " + getId() + " " +
+                "Numer pokoju: " + getRoomNumber() + " " +
+                "Ilość osób w pokoju: " + getRoomSize() + " " +
+                "Wyposażenie: " + getEquipment() + " " +
+                "Cena: " + getPrice();
     }
 
     public Room(int roomNumber, int roomSize, String equipment, BigDecimal price) {

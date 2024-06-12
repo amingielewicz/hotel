@@ -17,7 +17,6 @@ public class RoomService implements RoomServiceInterface{
             roomList = new ArrayList<>();
             roomList.add(room);
         }
-        int id = room.getId();
         Room.counterId++;
         return room.getId();
     }

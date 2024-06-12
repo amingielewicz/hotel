@@ -16,7 +16,6 @@ public class EmployeeService implements EmployeeServiceInterface{
             employeeList = new ArrayList<>();
             employeeList.add(employee);
         }
-        int id = employee.getId();
         Employee.counterId++;
         return employee.getId();
     }
