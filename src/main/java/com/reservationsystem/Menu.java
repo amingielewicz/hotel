@@ -4,23 +4,35 @@ import com.reservationsystem.config.CheckList;
 import com.reservationsystem.direction.Filter;
 import com.reservationsystem.dto.Customer;
 import com.reservationsystem.dto.Employee;
-import com.reservationsystem.service.CustomerService;
-import com.reservationsystem.service.EmployeeService;
+import com.reservationsystem.dto.Reservation;
+import com.reservationsystem.dto.Room;
+import com.reservationsystem.service.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Menu {
 
     private boolean exitApplication = true;
     private Scanner keyboard = new Scanner(System.in);
-    private CustomerService customerService = new CustomerService();
-    private EmployeeService employeeService = new EmployeeService();
+    private CustomerServiceInterface customerService = new CustomerService();
+    private EmployeeServiceInterface employeeService = new EmployeeService();
+    private RoomServiceInterface roomService = new RoomService();
+    private ReservationServiceInterface reservationService = new ReservationService(roomService);
     private int id;
     private String fullName;
     private String[] splitFullName;
     private String role;
     private String personalSkill;
     private Boolean idIsOnList;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int roomNumber;
+    private int roomSize;
+    private String equipment;
+    private BigDecimal price;
+    private BigDecimal sum;
 
 
     public void menu() {
@@ -38,7 +50,16 @@ public class Menu {
         System.out.println("(6) Pokaż wszystkich pracowników");
         System.out.println("(7) Zaktualizuj dane pracownika");
         System.out.println("(8) Usuń pracownika");
-
+        System.out.println("REZERWACJA");
+        System.out.println("(9) Dodaj rezerwację");
+        System.out.println("(10) Pokaż listę rezerwacji");
+        System.out.println("(11) Zmień rezerwację");
+        System.out.println("(12) Usuń rezerwację");
+        System.out.println("POKOJE");
+        System.out.println("(13) Dodaj pokój");
+        System.out.println("(14) Pokaż listę pokoi");
+        System.out.println("(15) Aktualizuj dane pokoju");
+        System.out.println("(16) Usuń pokój");
 
         int index = keyboard.nextInt();
         switch (index) {
@@ -48,12 +69,7 @@ public class Menu {
             case 1:
                 System.out.println("DODAWANIE KLIENTA:");
                 keyboard.nextLine();
-                System.out.println("Dodaj imię i nazwisko");
-                fullName = keyboard.nextLine();
-                splitFullName = validateFullName(fullName);
-                System.out.println("Dodaj numer PESEL");
-                String pesel = keyboard.nextLine();
-                customerService.create(new Customer(splitFullName[0], splitFullName[1], pesel));
+                createCustomer();
                 break;
             case 2:
                 System.out.println("LISTA KLIENTÓW:");
@@ -127,6 +143,144 @@ public class Menu {
                     idIsOnList = employeeService.delete(id);
                 } while (idIsOnList == false);
                 break;
+            case 9:
+                keyboard.nextLine();
+                System.out.println("DODAWANIE REZERWACJI:");
+                System.out.println("Podaj numer klienta lub stwórz nowego.");
+                customerService.findAll().stream()
+                        .forEach(customer -> {
+                            System.out.println(customer);
+                        });
+                System.out.println("Aby stworzyć klienta wciśnij 0.");
+                int customerId = keyboard.nextInt();
+                if (customerId == 0) {
+                    customerId = createCustomer();
+                }
+                System.out.println("Podaj datę rozpoczęcia rezerwacji");
+                startDate = createDate();
+                System.out.println("Podaj datę zakończenia rezerwacji");
+                endDate = createDate();
+                System.out.println("Podaj id pokoju.");
+                roomService.findAll().stream()
+                        .forEach(room -> {
+                            System.out.println(room);
+                        });
+                int roomId = keyboard.nextInt();
+                if (roomId == 0) {
+                    roomId = createRoom();
+                }
+                sum = reservationService.sum(roomId, startDate, endDate);
+                System.out.println("Całkowita kwota wynajmu pokoju: " + sum + " zł");
+                System.out.println("Wpisz sumę wpłaconego depozytu przez klienta.");
+                BigDecimal deposit = keyboard.nextBigDecimal();
+                String answer = isFullPaid(deposit);
+                System.out.println("Wybierz pracownika, który dokonał rezerwacji.");
+                employeeService.findAll().stream()
+                        .forEach(employee -> {
+                            System.out.println(employee);
+                        });
+                int employeeId = keyboard.nextInt();
+                reservationService.create(Reservation.builder()
+                        .customerId(customerId)
+                        .startReservationDate(startDate)
+                        .endReservationDate(endDate)
+                        .sum(sum)
+                        .deposit(deposit)
+                        .isFullPaid(answer)
+                        .employerId(employeeId)
+                        .build());
+                break;
+            case 10:
+                System.out.println("LISTA REZERWACJI:");
+                checkListNotNull(CheckList.builder().reservation(new Reservation()).build(), Filter.SHOW);
+                break;
+            case 11:
+                LocalDate updateStartDate;
+                LocalDate updateEndDate;
+                BigDecimal updateSum;
+                BigDecimal updateDeposit;
+                System.out.println("AKTUALIZACJA DANYCH REZERWACJI:");
+                checkListNotNull(CheckList.builder().reservation(new Reservation()).build(), Filter.UPDATE);
+                id = keyboard.nextInt();
+                if (reservationService.checkId(id)) {
+                    System.out.println("Podaj nową datę rozpoczęcia rezerwacji.");
+                    updateStartDate = createDate();
+                    System.out.println("Podaj nową datę zakończenia rezerwacji.");
+                    updateEndDate = createDate();
+                    System.out.println("Podaj nowe id pokoju.");
+                    roomService.findAll().stream()
+                            .forEach(room -> {
+                                System.out.println(room);
+                            });
+                    int updateRoomId = keyboard.nextInt();
+                    if (updateRoomId == 0) {
+                        updateRoomId = createRoom();
+                    }
+                    updateSum = reservationService.sum(updateRoomId, updateStartDate, updateEndDate);
+                    System.out.println("Całkowita kwota wynajmu pokoju: " + updateSum + " zł");
+                    System.out.println("Podaj nową kwotę wpłaty klienta.");
+                    updateDeposit = keyboard.nextBigDecimal();
+                    String updateAnswer = isFullPaid(updateDeposit);
+                    Reservation reservation = reservationService.getById(id);
+                    reservationService.update(Reservation.builder()
+                        .customerId(reservation.getCustomerId())
+                        .startReservationDate(updateStartDate)
+                        .endReservationDate(updateEndDate)
+                        .sum(updateSum)
+                        .deposit(updateDeposit)
+                        .isFullPaid(updateAnswer)
+                        .employerId(reservation.getEmployerId())
+                        .build());
+        } else{
+            System.out.println("Brak rezerwacji o podanym id");
+    }
+               break;
+            case 12:
+               do {
+                   System.out.println("--------------------------------------------------------------------------------");
+                    System.out.println("USUNIĘCIE REZERWACJI.");
+                   checkListNotNull(CheckList.builder().reservation(new Reservation()).build(), Filter.DELETE);
+                    id = keyboard.nextInt();
+                    idIsOnList = reservationService.delete(id);
+               } while (idIsOnList == false);
+                break;
+            case 13:
+                System.out.println("DODAWANIE POKOJU:");
+                keyboard.nextLine();
+                createRoom();
+                break;
+            case 14:
+                System.out.println("LISTA POKOI:");
+                checkListNotNull(CheckList.builder().room(new Room()).build(), Filter.SHOW);
+                break;
+            case 15:
+                System.out.println("AKTUALIZACJA DANYCH POKOJU:");
+                checkListNotNull(CheckList.builder().room(new Room()).build(), Filter.UPDATE);
+                id = keyboard.nextInt();
+                if (roomService.checkId(id)) {
+                    System.out.println("Podaj numer pokoju");
+                    int updateRoomNumber = keyboard.nextInt();
+                    System.out.println("Podaj ile osób pomieści pokój");
+                    int updateRoomSize = keyboard.nextInt();
+                    keyboard.nextLine();
+                    System.out.println("Podaj wyposażenie pokoju.");
+                    String updateEquipment = keyboard.nextLine();
+                    System.out.println("Podaj cenę pokoju");
+                    BigDecimal updatePrice = keyboard.nextBigDecimal();
+                    roomService.update(new Room(updateRoomNumber, updateRoomSize, updateEquipment, updatePrice));
+                } else {
+                    System.out.println("Brak pokojów o podanym id");
+                }
+                break;
+            case 16:
+                do {
+                    System.out.println("--------------------------------------------------------------------------------");
+                    System.out.println("USUNIĘCIE POKOJU.");
+                    checkListNotNull(CheckList.builder().room(new Room()).build(), Filter.DELETE);
+                    id = keyboard.nextInt();
+                    idIsOnList = roomService.delete(id);
+                } while (idIsOnList == false);
+                break;
             default:
                 System.out.println("Brak takiej opcji.");
         }
@@ -173,6 +327,46 @@ public class Menu {
                 System.out.println("Brak listy pracowników.");
                 showMenu();
             }
+        } else if (checkList.getReservation() != null) {
+            if (reservationService.findAll() != null) {
+                if (!reservationService.findAll().isEmpty()) {
+                    if (Filter.DELETE.equals(filter)) {
+                        System.out.println("Wybierz rezerwację, której dane chcesz usunąć.");
+                    }
+                    if (Filter.UPDATE.equals(filter)) {
+                        System.out.println("Wybierz rezerwacje, której dane chcesz zmienić.");
+                    }
+                    reservationService.findAll().forEach(customer -> {
+                        System.out.println(customer.toString());
+                    });
+                } else {
+                    System.out.println("Brak listy rezerwacji.");
+                    showMenu();
+                }
+            } else {
+                System.out.println("Brak listy rezerwacji.");
+                showMenu();
+            }
+        } else if (checkList.getRoom() != null) {
+            if (roomService.findAll() != null) {
+                if (!roomService.findAll().isEmpty()) {
+                    if (Filter.DELETE.equals(filter)) {
+                        System.out.println("Wybierz pokój, którego dane chcesz usunąć.");
+                    }
+                    if (Filter.UPDATE.equals(filter)) {
+                        System.out.println("Wybierz pokój, którego dane chcesz zmienić.");
+                    }
+                    roomService.findAll().forEach(customer -> {
+                        System.out.println(customer.toString());
+                    });
+                } else {
+                    System.out.println("Brak pokoi.");
+                    showMenu();
+                }
+            } else {
+                System.out.println("Brak pokoi.");
+                showMenu();
+            }
         }
     }
 
@@ -198,6 +392,46 @@ public class Menu {
             }
         }
     }
+    private int createCustomer() {
+        System.out.println("Dodaj imię i nazwisko");
+        fullName = keyboard.nextLine();
+        splitFullName = validateFullName(fullName);
+        System.out.println("Dodaj numer PESEL");
+        String pesel = keyboard.nextLine();
+        int id = customerService.create(new Customer(splitFullName[0], splitFullName[1], pesel));
+        return id;
+    }
 
+    private int createRoom() {
+        System.out.println("Podaj numer pokoju");
+        roomNumber = keyboard.nextInt();
+        System.out.println("Podaj ile osób pomieści pokój.");
+        roomSize = keyboard.nextInt();
+        System.out.println("Podaj wyposażenie pokoju");
+        keyboard.nextLine();
+        equipment = keyboard.nextLine();
+        System.out.println("Podaj cenę za dobę");
+        price = keyboard.nextBigDecimal();
+        int id = roomService.create(new Room(roomNumber, roomSize, equipment, price));
+        return id;
+    }
 
+    private LocalDate createDate() {
+        System.out.println("Podaj dzień");
+        int day = keyboard.nextInt();
+        System.out.println("Podaj miesiąc");
+        int month = keyboard.nextInt();
+        System.out.println("Podaj rok");
+        int year = keyboard.nextInt();
+        keyboard.nextLine();
+       return LocalDate.of(year, month, day);
+    }
+
+    private String isFullPaid(BigDecimal deposit) {
+        if(deposit.compareTo(sum) < 0) {
+            return "nie";
+        } else {
+            return "tak";
+        }
+    }
 }

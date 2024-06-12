@@ -16,7 +16,6 @@ public class CustomerService implements CustomerServiceInterface {
             customerList = new ArrayList<>();
             customerList.add(customer);
         }
-        int id = customer.getId();
         Customer.counterId++;
         return customer.getId();
     }
