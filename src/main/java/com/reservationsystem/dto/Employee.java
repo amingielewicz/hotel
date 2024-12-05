@@ -47,7 +47,7 @@ public class Employee extends Common {
                     "Nazwisko: " + super.getSurname() + " " +
                     "stanowisko: " + getRole() + " " +
                     "umiejętności: " + getPersonalSkill();
-        }
+    }
 
 
     public Employee(int id, String name, String surname, String role, String personalSkill) {

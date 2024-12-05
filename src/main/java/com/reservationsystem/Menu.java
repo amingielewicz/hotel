@@ -82,7 +82,7 @@ public class Menu {
                     checkListNotNull(CheckList.builder().customer(new Customer()).build(), Filter.DELETE);
                     id = keyboard.nextInt();
                     idIsOnList = customerService.delete(id);
-                } while (idIsOnList == false);
+                } while (!idIsOnList);
                 break;
             case 5:
                 System.out.println("DODAWANIE PRACOWNIKA:");

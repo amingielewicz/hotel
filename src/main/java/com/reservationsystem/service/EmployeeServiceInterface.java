@@ -10,5 +10,5 @@ public interface EmployeeServiceInterface {
     Employee getEmployee(int id);
     void update(Employee updateEmployee);
     boolean checkId(int id);
-    Boolean delete(int id);
+    boolean delete(int id);
 }

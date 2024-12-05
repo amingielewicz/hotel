@@ -6,10 +6,10 @@ import com.reservationsystem.dto.Reservation;
 import com.reservationsystem.dto.Room;
 
 public class CheckList {
-    private Customer customer;
-    private Employee employee;
-    private Reservation reservation;
-    private Room room;
+    private final Customer customer;
+    private final Employee employee;
+    private final Reservation reservation;
+    private final Room room;
 
     public CheckList(Customer customer, Employee employee, Reservation reservation, Room room) {
         this.customer = customer;

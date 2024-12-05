@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 
 public class Room {
 
-    private int id = 1;
+    public static int counterId = 1;
+    private int id = counterId;
     private int roomNumber;
     private int roomSize;
     private String equipment;
@@ -16,6 +17,22 @@ public class Room {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public void setRoomSize(int roomSize) {
+        this.roomSize = roomSize;
+    }
+
+    public void setEquipment(String equipment) {
+        this.equipment = equipment;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public int getRoomNumber() {

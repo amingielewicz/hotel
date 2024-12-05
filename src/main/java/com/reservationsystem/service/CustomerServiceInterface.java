@@ -10,5 +10,5 @@ public interface CustomerServiceInterface {
     Customer getCustomer(int id);
     void update(Customer updateCustomer);
     boolean checkId(int id);
-    Boolean delete(int id);
+    boolean delete(int id);
 }

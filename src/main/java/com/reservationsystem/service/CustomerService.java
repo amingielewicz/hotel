@@ -58,9 +58,9 @@ public class CustomerService implements CustomerServiceInterface {
         return false;
     }
 
-    public Boolean delete(int id) {
+    public boolean delete(int id) {
         int index = getIndexListById(id);
-        Boolean idIsOnList;
+        boolean idIsOnList;
         if (index != id) {
             customerList.remove(index);
             idIsOnList = true;
