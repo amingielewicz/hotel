@@ -4,9 +4,12 @@ import com.reservationsystem.config.CheckList;
 import com.reservationsystem.direction.Filter;
 import com.reservationsystem.dto.Customer;
 import com.reservationsystem.dto.Employee;
+import com.reservationsystem.dto.Room;
 import com.reservationsystem.service.CustomerService;
 import com.reservationsystem.service.EmployeeService;
+import com.reservationsystem.service.RoomService;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Menu {
@@ -14,30 +17,39 @@ public class Menu {
     private boolean exitApplication = true;
     private Scanner keyboard = new Scanner(System.in);
     private CustomerService customerService = new CustomerService();
-    private EmployeeService employeeService = new EmployeeService();
+    private EmployeeService employeeServic = new EmployeeService();
+    private RoomService roomService = new RoomService();
     private int id;
     private String fullName;
     private String[] splitFullName;
     private String role;
     private String personalSkill;
     private Boolean idIsOnList;
-
+    private int roomNumber;
+    private int roomSize;
+    private String equipment;
+    private BigDecimal price;
 
     public void menu() {
         System.out.println("RESERVATION SYSTEM");
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Wybierz jedną z opcji");
         System.out.println("(0) Wyjście z aplikacji");
-        System.out.println("OPCJE KLIENTA");
+        System.out.println("KLIENCI");
         System.out.println("(1) Dodaj dane klienta");
         System.out.println("(2) Pokaż wszystkich klientów");
         System.out.println("(3) Zaktualizuj dane klienta");
         System.out.println("(4) Usuń klienta");
-        System.out.println("OPCJE PRACOWNIKA");
+        System.out.println("PRACOWNICY");
         System.out.println("(5) Dodaj dane pracownika");
         System.out.println("(6) Pokaż wszystkich pracowników");
         System.out.println("(7) Zaktualizuj dane pracownika");
         System.out.println("(8) Usuń pracownika");
+        System.out.println("POKOJE");
+        System.out.println("(9) Dodaj pokój");
+        System.out.println("(10) Pokaż dane o pokojach");
+        System.out.println("(11) Zaktualizuj dane o pokoju");
+        System.out.println("(12) Usuń pokój");
 
 
         int index = keyboard.nextInt();
@@ -94,7 +106,7 @@ public class Menu {
                 role = keyboard.nextLine();
                 System.out.println("Dodaj umiejętności pracownika");
                 personalSkill = keyboard.nextLine();
-                employeeService.create(new Employee(splitFullName[0], splitFullName[1], role, personalSkill));
+                employeeServic.create(new Employee(splitFullName[0], splitFullName[1], role, personalSkill));
                 break;
             case 6:
                 System.out.println("LISTA PRACOWNIKÓW:");
@@ -104,7 +116,7 @@ public class Menu {
                 System.out.println("AKTUALIZACJA DANYCH PRACOWNIKA:");
                 checkListNotNull(CheckList.builder().employee(new Employee()).build(), Filter.UPDATE);
                 id = keyboard.nextInt();
-                if (employeeService.checkId(id)) {
+                if (employeeServic.checkId(id)) {
                     System.out.println("Podaj nowe imię i nazwisko pracownika.");
                     keyboard.nextLine();
                     String updateFullName = keyboard.nextLine();
@@ -113,7 +125,7 @@ public class Menu {
                     role = keyboard.nextLine();
                     System.out.println("Podaj nowe umiejętności pracownika");
                     personalSkill = keyboard.nextLine();
-                    employeeService.update(new Employee(id, splitUpdateFullName[0], splitUpdateFullName[1], role, personalSkill));
+                    employeeServic.update(new Employee(id, splitUpdateFullName[0], splitUpdateFullName[1], role, personalSkill));
                 } else {
                     System.out.println("Brak klienta o podanym id");
                 }
@@ -124,11 +136,59 @@ public class Menu {
                     System.out.println("USUNIĘCIE DANYCH PRACOWNIKA.");
                     checkListNotNull(CheckList.builder().employee(new Employee()).build(), Filter.DELETE);
                     id = keyboard.nextInt();
-                    idIsOnList = employeeService.delete(id);
+                    idIsOnList = employeeServic.delete(id);
+                } while (idIsOnList == false);
+                break;
+            case 9:
+                System.out.println("DODAWANIE POKOJU:");
+                keyboard.nextLine();
+                System.out.println("Dodaj numer pokoju");
+                roomNumber = keyboard.nextInt();
+                System.out.println("Dodaj rozmiar pokoju");
+                roomSize = keyboard.nextInt();
+                keyboard.nextLine();
+                System.out.println("Dodaj sprzęt w pokoju");
+                equipment = keyboard.nextLine();
+
+                System.out.println("Podaj cenę wynajęcia pokoju");
+                price = keyboard.nextBigDecimal();
+                roomService.create(new Room(roomNumber, roomSize, equipment, price));
+                break;
+            case 10:
+                System.out.println("POKOJE:");
+                checkListNotNull(CheckList.builder().room(new Room(roomNumber, roomSize, equipment, price)).build(), Filter.SHOW);
+                break;
+            case 11:
+                System.out.println("AKTUALIZACJA DANYCH O POKOJACH:");
+                checkListNotNull(CheckList.builder().room(new Room(roomNumber, roomSize, equipment, price)).build(), Filter.UPDATE);
+                id = keyboard.nextInt();
+                if (roomService.checkId(id)) {
+                    System.out.println("Podaj nowy numer pokoju.");
+                    roomNumber = keyboard.nextInt();
+                    System.out.println("Podaj nowy rozmiar pokoju.");
+                    roomSize = keyboard.nextInt();
+                    keyboard.nextLine();
+                    System.out.println("Podaj nowe wyposażenie pokoju");
+                    equipment = keyboard.nextLine();
+                    System.out.println("Podaj nową cenę pokoju");
+                    price = keyboard.nextBigDecimal();
+                    roomService.update(new Room(roomNumber, roomSize, equipment, price));
+                } else {
+                    System.out.println("Brak pokoju o podanym id");
+                }
+                break;
+            case 12:
+                do {
+                    System.out.println("--------------------------------------------------------------------------------");
+                    System.out.println("USUNIĘCIE POKOJU.");
+                    checkListNotNull(CheckList.builder().room(new Room(roomNumber, roomSize, equipment, price)).build(), Filter.DELETE);
+                    id = keyboard.nextInt();
+                    idIsOnList = roomService.delete(id);
                 } while (idIsOnList == false);
                 break;
             default:
                 System.out.println("Brak takiej opcji.");
+
         }
     }
 
@@ -154,15 +214,15 @@ public class Menu {
                 showMenu();
             }
         } else if (checkList.getEmployee() != null) {
-            if (employeeService.findAll() != null) {
-                if (!employeeService.findAll().isEmpty()) {
+            if (employeeServic.findAll() != null) {
+                if (!employeeServic.findAll().isEmpty()) {
                     if (Filter.DELETE.equals(filter)) {
                         System.out.println("Wybierz pracownika, którego dane chcesz usunąć.");
                     }
                     if (Filter.UPDATE.equals(filter)) {
                         System.out.println("Wybierz pracownika, którego dane chcesz zmienić.");
                     }
-                    employeeService.findAll().forEach(customer -> {
+                    employeeServic.findAll().forEach(customer -> {
                         System.out.println(customer.toString());
                     });
                 } else {
@@ -173,7 +233,27 @@ public class Menu {
                 System.out.println("Brak listy pracowników.");
                 showMenu();
             }
+        } else if (checkList.getRoom() != null) {
+        if (roomService.findAll() != null) {
+            if (!roomService.findAll().isEmpty()) {
+                if (Filter.DELETE.equals(filter)) {
+                    System.out.println("Wybierz pokój, który chcesz usunąć.");
+                }
+                if (Filter.UPDATE.equals(filter)) {
+                    System.out.println("Wybierz pokój, który chcesz zmienić.");
+                }
+                roomService.findAll().forEach(customer -> {
+                    System.out.println(customer.toString());
+                });
+            } else {
+                System.out.println("Brak listy pokoi.");
+                showMenu();
+            }
+        } else {
+            System.out.println("Brak listy pokoi.");
+            showMenu();
         }
+    }
     }
 
     private String[] validateFullName(String fullName) {
@@ -198,6 +278,4 @@ public class Menu {
             }
         }
     }
-
-
 }
