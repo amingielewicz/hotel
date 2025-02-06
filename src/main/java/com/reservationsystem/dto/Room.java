@@ -53,17 +53,17 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room{" +
-                "id=" + id +
-                ", roomNumber=" + roomNumber +
-                ", roomSize=" + roomSize +
-                ", equipment='" + equipment + '\'' +
-                ", price=" + price +
-                '}';
+        return "Numer pokoju: " + getRoomNumber() + " " +
+                "Rozmiar pokoju: " + getRoomSize() + " " +
+                "Wyposażenie: " + getEquipment() + " " +
+                "Cena: " + getPrice();
     }
 
-    public Room(int roomNumber, int roomSize, String equipment, BigDecimal price) {
+    public Room() {
+    }
 
+    public Room(int id, int roomNumber, int roomSize, String equipment, BigDecimal price) {
+        this.id = id;
         this.roomNumber = roomNumber;
         this.roomSize = roomSize;
         this.equipment = equipment;
@@ -73,13 +73,16 @@ public class Room {
         return new RoomBuilder();
     }
     public static class RoomBuilder {
-
+        private int id;
         private int roomNumber;
         private int roomSize;
         private String equipment;
         private BigDecimal price;
 
-
+        public RoomBuilder id(int id) {
+            this.id = id;
+            return this;
+        }
         public RoomBuilder roomNumber(int roomNumber) {
             this.roomNumber = roomNumber;
             return this;
@@ -98,7 +101,7 @@ public class Room {
         }
 
         public Room build() {
-            return new Room(roomNumber, roomSize, equipment, price);
+            return new Room(id, roomNumber, roomSize, equipment, price);
         }
 
     }

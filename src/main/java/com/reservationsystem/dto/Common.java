@@ -5,7 +5,6 @@ public class Common {
     private String name;
     private String surname;
 
-
     public Common(String name, String surname) {
         this.name = name;
         this.surname = surname;
@@ -20,6 +19,7 @@ public class Common {
     public String getSurname() {
         return surname;
     }
+
 
     public void setName(String name) {
         this.name = name;

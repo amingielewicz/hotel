@@ -4,14 +4,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Reservation {
+
+    public static int counterId = 1;
     private int id = 1;
     private int customerId;
     private LocalDate startReservationDate;
     private LocalDate endReservationDate;
+    private Room room;
     private BigDecimal sum;
     private BigDecimal deposit;
     private boolean isFullPaid;
     private int employerId;
+
 
     public int getId() {
         return id;
@@ -29,6 +33,10 @@ public class Reservation {
         return endReservationDate;
     }
 
+    public Room getRoom() {
+        return room;
+    }
+
     public BigDecimal getSum() {
         return sum;
     }
@@ -37,7 +45,7 @@ public class Reservation {
         return deposit;
     }
 
-    public boolean isFullPaid() {
+    public boolean getFullPaid() {
         return isFullPaid;
     }
 
@@ -49,6 +57,39 @@ public class Reservation {
         this.id = id;
     }
 
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setStartReservationDate(LocalDate startReservationDate) {
+        this.startReservationDate = startReservationDate;
+    }
+
+    public void setEndReservationDate(LocalDate endReservationDate) {
+        this.endReservationDate = endReservationDate;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
+    }
+
+    public void setFullPaid(boolean fullPaid) {
+        isFullPaid = fullPaid;
+    }
+
+    public void setEmployerId(int employerId) {
+        this.employerId = employerId;
+    }
+
+    //TODO do zmiany
     @Override
     public String toString() {
         return "Reservation{" +
@@ -56,6 +97,7 @@ public class Reservation {
                 ", customerId=" + customerId +
                 ", startReservationDate=" + startReservationDate +
                 ", endReservationDate=" + endReservationDate +
+                ", room=" + room +
                 ", sum=" + sum +
                 ", deposit=" + deposit +
                 ", isFullPaid=" + isFullPaid +
@@ -63,11 +105,15 @@ public class Reservation {
                 '}';
     }
 
-    public Reservation(int customerId, LocalDate startReservationDate, LocalDate endReservationDate,
+    public Reservation() {
+    }
+
+    public Reservation(int customerId, LocalDate startReservationDate, LocalDate endReservationDate, Room room,
                        BigDecimal sum, BigDecimal deposit, boolean isFullPaid, int employerId) {
         this.customerId = customerId;
         this.startReservationDate = startReservationDate;
         this.endReservationDate = endReservationDate;
+        this.room = room;
         this.sum = sum;
         this.deposit = deposit;
         this.isFullPaid = isFullPaid;
@@ -80,6 +126,7 @@ public class Reservation {
         private int customerId;
         private LocalDate startReservationDate;
         private LocalDate endReservationDate;
+        private Room room;
         private BigDecimal sum;
         private BigDecimal deposit;
         private boolean isFullPaid;
@@ -97,6 +144,12 @@ public class Reservation {
             this.endReservationDate = endReservationDate;
             return this;
         }
+
+        public ReservationBuilder room(Room room) {
+            this.room = room;
+            return this;
+        }
+
         public ReservationBuilder sum(BigDecimal sum) {
             this.sum = sum;
             return  this;
@@ -114,7 +167,7 @@ public class Reservation {
             return this;
         }
         public Reservation build() {
-            return new Reservation(customerId, startReservationDate, endReservationDate, sum, deposit, isFullPaid, employerId);
+            return new Reservation(customerId, startReservationDate, endReservationDate, room,sum, deposit, isFullPaid, employerId);
         }
     }
 }

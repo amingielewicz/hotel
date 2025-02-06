@@ -2,9 +2,13 @@ package com.reservationsystem.service;
 
 import com.reservationsystem.dto.Employee;
 import com.reservationsystem.dto.Room;
+import com.reservationsystem.exception.DuplicateRoomNumber;
+import com.reservationsystem.exception.EmptyListException;
+import com.reservationsystem.exception.WrongNumberException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RoomService implements RoomServiceInterface {
@@ -35,6 +39,7 @@ public class RoomService implements RoomServiceInterface {
         return null;
     }
 
+
     public void update(Room updateRoom) {
         roomList.forEach(room -> {
                     if (room.getId() == updateRoom.getId()) {
@@ -45,6 +50,17 @@ public class RoomService implements RoomServiceInterface {
                     }
                 }
         );
+    }
+
+    public Room getByRoomNumber(int number) {
+        for (Room room : roomList) {
+            if (room.getRoomNumber() == number) {
+                return room;
+            } else {
+                throw new WrongNumberException("Podany numer pokoju nie istnieje.");
+            }
+        }
+        return null;
     }
 
     public boolean checkId(int id) {
@@ -60,34 +76,46 @@ public class RoomService implements RoomServiceInterface {
         return false;
     }
 
-    public boolean delete(int id) {
-        int index = getIndexListById(id);
+    public boolean delete(int roomNumber) {
+        int index = getRoomByNumber(roomNumber);
         boolean idIsOnList;
-        if (index != id) {
+        if (index != roomNumber) {
             roomList.remove(index);
             idIsOnList = true;
-            System.out.println("Usunieto pokój o id: " + id);
+            System.out.println("Usunięto pokój o numerze: " + roomNumber);
         }else {
-            System.err.println("Brak pokoju o podanym id: " + id);
+            System.err.println("Brak pokoju o podanym numerze: " + roomNumber);
             idIsOnList = false;
         }
         return idIsOnList;
     }
 
-    private int getIndexListById(int id) {
+    private int getRoomByNumber(int roomNumber) {
         int index = 0;
         if (roomList != null) {
             for (Room room : roomList) {
-                if (room.getId() == id){
+                if (room.getRoomNumber() == roomNumber){
                     index = roomList.indexOf(room);
                     return index;
                 }
             }
         }else {
-            System.err.println("Brak pokojów na liscie");
-            return id;
+            System.err.println("Brak pokojów na liście");
+            return roomNumber;
         }
-        return id;
+        return roomNumber;
     }
+
+    public void validateRoomNumber(int roomNumber) {
+        if(roomList != null)
+            for (Room room : roomList) {
+                if (roomNumber == room.getRoomNumber()) {
+                    throw new DuplicateRoomNumber("Pokój o takim numerze już istnieje.");
+                }
+            }
+    }
+
+
+
 }
 
