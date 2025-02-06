@@ -26,17 +26,19 @@ public class CheckList {
         return employee;
     }
 
-    public Reservation getReservation() {
-        return reservation;
-    }
-
     public Room getRoom() {
         return room;
     }
 
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+
     public static CheckListBuilder builder() {
         return new CheckListBuilder();
     }
+
 public static class CheckListBuilder {
     private Customer customer;
     private Employee employee;
@@ -53,15 +55,16 @@ public static class CheckListBuilder {
         return this;
     }
 
+    public CheckListBuilder room(Room room) {
+        this.room = room;
+        return this;
+    }
+
     public CheckListBuilder reservation(Reservation reservation) {
         this.reservation = reservation;
         return this;
     }
 
-    public CheckListBuilder room(Room room) {
-        this.room = room;
-        return this;
-    }
 
     public CheckList build() {
         return new CheckList(customer, employee, reservation, room);
