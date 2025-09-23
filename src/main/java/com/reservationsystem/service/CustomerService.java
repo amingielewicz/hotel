@@ -1,6 +1,9 @@
 package com.reservationsystem.service;
 
 import com.reservationsystem.dto.Customer;
+import com.reservationsystem.dto.Room;
+import com.reservationsystem.exception.WrongCustomerId;
+import com.reservationsystem.exception.WrongNumberException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +30,15 @@ public class CustomerService implements CustomerServiceInterface {
 
     public Customer getCustomer(int id) {
         for (Customer customer : customerList) {
-            if (customer.getId() == id) {
-                return customer;
-            }
+                if (customer.getId() == id) {
+                    return customer;
+                } else {
+                    throw new WrongCustomerId("Podano błędny Id klienta.");
+                }
         }
         return null;
     }
+
 
     public void update(Customer updateCustomer) {
         customerList.forEach(customer -> {
@@ -64,9 +70,9 @@ public class CustomerService implements CustomerServiceInterface {
         if (index != id) {
             customerList.remove(index);
             idIsOnList = true;
-            System.out.println("Usunieto uzytkownika o id: " + id);
+            System.out.println("Usunieto klienta o id: " + id);
         }else {
-            System.err.println("Brak uzytkownika o podanym id: " + id);
+            System.err.println("Brak klienta o podanym id: " + id);
             idIsOnList = false;
         }
         return idIsOnList;
@@ -82,7 +88,7 @@ public class CustomerService implements CustomerServiceInterface {
                 }
             }
         }else {
-            System.err.println("Brak klientow na liscie");
+            System.err.println("Brak klientów na liście");
             return id;
         }
         return id;
